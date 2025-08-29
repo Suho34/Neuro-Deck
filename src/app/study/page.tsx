@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -16,7 +15,6 @@ interface Deck {
 }
 
 export default function StudyPage() {
-  const router = useRouter();
   const [decks, setDecks] = useState<Deck[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -35,7 +33,8 @@ export default function StudyPage() {
         setDecks(data);
       }
     } catch (error) {
-      toast.error("Error loading decks");
+      toast.error("Error loading study session");
+      console.error("Error:", error);
     } finally {
       setIsLoading(false);
     }

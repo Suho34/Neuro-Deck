@@ -38,8 +38,10 @@ export default function NewDeckPage() {
       const deck = await response.json();
       toast.success("Deck created successfully!");
       router.push(`/decks/${deck._id}`);
-    } catch (error: any) {
-      toast.error(error.message || "Failed to create deck");
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to create deck";
+      toast.error(errorMessage);
       console.error("Error creating deck:", error);
     } finally {
       setIsLoading(false);

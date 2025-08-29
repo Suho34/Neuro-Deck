@@ -42,25 +42,24 @@ export default function ReviewPage() {
   });
 
   useEffect(() => {
+    const fetchFlashcards = async () => {
+      try {
+        const response = await fetch(`/api/decks/${deckId}/flashcards`);
+        if (response.ok) {
+          const data = await response.json();
+          setFlashcards(data);
+        } else {
+          throw new Error("Failed to fetch flashcards");
+        }
+      } catch (error) {
+        toast.error("Error loading flashcards");
+        console.error("Error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     fetchFlashcards();
   }, [deckId]);
-
-  const fetchFlashcards = async () => {
-    try {
-      const response = await fetch(`/api/decks/${deckId}/flashcards`);
-      if (response.ok) {
-        const data = await response.json();
-        setFlashcards(data);
-      } else {
-        throw new Error("Failed to fetch flashcards");
-      }
-    } catch (error) {
-      toast.error("Error loading flashcards");
-      console.error("Error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleFlip = () => setIsFlipped(!isFlipped);
 

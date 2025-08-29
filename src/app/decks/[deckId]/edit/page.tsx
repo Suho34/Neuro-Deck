@@ -28,25 +28,25 @@ export default function EditDeckPage() {
   });
 
   useEffect(() => {
+    const fetchDeck = async () => {
+      try {
+        const response = await fetch(`/api/decks/${deckId}`);
+        if (response.ok) {
+          const deck = await response.json();
+          setFormData({
+            title: deck.title,
+            description: deck.description || "",
+            isPublic: deck.isPublic || false,
+          });
+        }
+      } catch (error) {
+        toast.error("Error loading deck");
+        console.error("Error:", error);
+      }
+    };
+
     fetchDeck();
   }, [deckId]);
-
-  const fetchDeck = async () => {
-    try {
-      const response = await fetch(`/api/decks/${deckId}`);
-      if (response.ok) {
-        const deck = await response.json();
-        setFormData({
-          title: deck.title,
-          description: deck.description || "",
-          isPublic: deck.isPublic || false,
-        });
-      }
-    } catch (error) {
-      toast.error("Error loading deck");
-      console.error("Error:", error);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,8 +66,10 @@ export default function EditDeckPage() {
 
       toast.success("Deck updated successfully!");
       router.push(`/decks/${deckId}`);
-    } catch (error: any) {
-      toast.error(error.message || "Failed to update deck");
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to update deck";
+      toast.error(errorMessage);
       console.error("Error updating deck:", error);
     } finally {
       setIsLoading(false);
@@ -80,13 +82,6 @@ export default function EditDeckPage() {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.checked,
     }));
   };
 

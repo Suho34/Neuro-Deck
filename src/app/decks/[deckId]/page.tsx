@@ -25,7 +25,7 @@ export default async function DeckDetailPage({ params }: PageProps) {
 
   const { deckId } = await params;
   let deck = null;
-  let flashcards: any = [];
+  let flashcards: unknown[] = [];
 
   try {
     await connectDB();
@@ -69,6 +69,28 @@ export default async function DeckDetailPage({ params }: PageProps) {
       </div>
     );
   }
+
+  // Type guard function to check if a flashcard has the expected properties
+  const isFlashcard = (
+    card: unknown
+  ): card is {
+    _id: { toString: () => string };
+    front: string;
+    back: string;
+    difficulty?: string;
+    createdAt: string | Date;
+  } => {
+    return (
+      typeof card === "object" &&
+      card !== null &&
+      "_id" in card &&
+      "front" in card &&
+      "back" in card
+    );
+  };
+
+  // Filter and type-guard the flashcards
+  const validFlashcards = flashcards.filter(isFlashcard);
 
   return (
     <div className="container mx-auto p-6">
@@ -115,7 +137,9 @@ export default async function DeckDetailPage({ params }: PageProps) {
                 <span className="block font-medium text-gray-700">
                   Total Cards
                 </span>
-                <p className="text-gray-600 mt-1">{flashcards.length} cards</p>
+                <p className="text-gray-600 mt-1">
+                  {validFlashcards.length} cards
+                </p>
               </div>
             </div>
           </section>
@@ -150,11 +174,11 @@ export default async function DeckDetailPage({ params }: PageProps) {
             <div className="flex items-center justify-between mb-6">
               <h2 className="flex items-center gap-2 text-2xl font-semibold text-gray-800">
                 <PiCardsFill className="w-7 h-7 text-gray-700" />
-                Flashcards ({flashcards.length})
+                Flashcards ({validFlashcards.length})
               </h2>
             </div>
 
-            {flashcards.length === 0 ? (
+            {validFlashcards.length === 0 ? (
               <div className="flex flex-col items-center justify-center text-center py-12 bg-gradient-to-b from-gray-50 to-gray-100 rounded-2xl border border-gray-200 shadow-sm">
                 {/* Icon container */}
                 <div className="mb-6 flex items-center justify-center w-20 h-20 rounded-full bg-white shadow-inner border">
@@ -189,7 +213,7 @@ export default async function DeckDetailPage({ params }: PageProps) {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {flashcards.slice(0, 4).map((flashcard) => (
+                {validFlashcards.slice(0, 4).map((flashcard) => (
                   <div
                     key={flashcard._id.toString()}
                     className="p-5 border rounded-xl bg-white shadow-sm hover:shadow-md transition"
@@ -217,10 +241,10 @@ export default async function DeckDetailPage({ params }: PageProps) {
                   </div>
                 ))}
 
-                {flashcards.length > 4 && (
+                {validFlashcards.length > 4 && (
                   <div className="border rounded-xl p-6 text-center bg-gray-50">
                     <p className="text-gray-600 mb-3">
-                      + {flashcards.length - 4} more flashcards
+                      + {validFlashcards.length - 4} more flashcards
                     </p>
                     <Button
                       variant="outline"
@@ -239,7 +263,7 @@ export default async function DeckDetailPage({ params }: PageProps) {
           </section>
 
           {/* Study Progress */}
-          {flashcards.length > 0 && (
+          {validFlashcards.length > 0 && (
             <section>
               <h2 className="text-2xl font-semibold mb-4 text-gray-800">
                 📊 Study Progress
@@ -247,15 +271,16 @@ export default async function DeckDetailPage({ params }: PageProps) {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                 <div className="bg-blue-50 p-5 rounded-xl">
                   <div className="text-3xl font-bold text-blue-600">
-                    {flashcards.length}
+                    {validFlashcards.length}
                   </div>
                   <div className="text-sm text-blue-700">Total Cards</div>
                 </div>
                 <div className="bg-green-50 p-5 rounded-xl">
                   <div className="text-3xl font-bold text-green-600">
                     {
-                      flashcards.filter((card) => card.difficulty === "easy")
-                        .length
+                      validFlashcards.filter(
+                        (card) => card.difficulty === "easy"
+                      ).length
                     }
                   </div>
                   <div className="text-sm text-green-700">Easy</div>
@@ -263,8 +288,9 @@ export default async function DeckDetailPage({ params }: PageProps) {
                 <div className="bg-yellow-50 p-5 rounded-xl">
                   <div className="text-3xl font-bold text-yellow-600">
                     {
-                      flashcards.filter((card) => card.difficulty === "medium")
-                        .length
+                      validFlashcards.filter(
+                        (card) => card.difficulty === "medium"
+                      ).length
                     }
                   </div>
                   <div className="text-sm text-yellow-700">Medium</div>
@@ -272,8 +298,9 @@ export default async function DeckDetailPage({ params }: PageProps) {
                 <div className="bg-red-50 p-5 rounded-xl">
                   <div className="text-3xl font-bold text-red-600">
                     {
-                      flashcards.filter((card) => card.difficulty === "hard")
-                        .length
+                      validFlashcards.filter(
+                        (card) => card.difficulty === "hard"
+                      ).length
                     }
                   </div>
                   <div className="text-sm text-red-700">Hard</div>

@@ -42,9 +42,11 @@ export default function AddFlashcardPage() {
 
       // Reset form and stay on page
       setFormData({ front: "", back: "" });
-    } catch (error: any) {
-      toast.error(error.message || "Failed to create flashcard");
-      console.error("Error creating flashcard:", error);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to create flashcard";
+      toast.error(errorMessage);
+      console.error("Error creating deck:", error);
     } finally {
       setIsLoading(false);
     }
