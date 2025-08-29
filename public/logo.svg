@@ -1,0 +1,13 @@
+<svg width="240" height="240" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="neuro3" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </radialGradient>
+  </defs>
+  <rect x="25" y="25" width="70" height="70" rx="16" fill="url(#neuro3)"/>
+  <circle cx="50" cy="55" r="5" fill="white"/>
+  <circle cx="70" cy="55" r="5" fill="white"/>
+  <circle cx="60" cy="70" r="5" fill="white"/>
+  <path d="M50 55 L70 55 L60 70 Z" stroke="white" stroke-width="2" fill="none"/>
+</svg>
