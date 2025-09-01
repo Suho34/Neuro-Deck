@@ -44,8 +44,10 @@ export default function DeleteDeckButton({
       toast.success("Deck deleted successfully");
       router.push("/dashboard");
       router.refresh(); // Refresh the page to update the deck list
-    } catch (error: any) {
-      toast.error(error.message || "Failed to delete deck");
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to delete deck";
+      toast.error(errorMessage);
       console.error("Error deleting deck:", error);
     } finally {
       setIsLoading(false);

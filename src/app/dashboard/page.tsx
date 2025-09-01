@@ -16,11 +16,19 @@ import {
 } from "lucide-react";
 import { FaGraduationCap } from "react-icons/fa";
 
+interface DeckData {
+  id: string;
+  title: string;
+  createdAt: string | Date;
+  dueCardsCount: number;
+  totalCardsCount: number;
+}
+
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
-  if (!session) redirect("/signin");
+  if (!session?.user?.email) redirect("/sign-in");
 
-  let decks: any[] = [];
+  let decks: DeckData[] = [];
   let error: string | null = null;
   let totalDueCards = 0;
   let totalCards = 0;
@@ -176,7 +184,7 @@ export default async function DashboardPage() {
                 🔥 {totalDueCards} Card{totalDueCards !== 1 ? "s" : ""} Waiting
               </h3>
               <p className="text-indigo-100 mb-8 max-w-lg mx-auto leading-relaxed">
-                Don’t let your memory fade. Jump back in and keep building those
+                Don't let your memory fade. Jump back in and keep building those
                 <span className="font-semibold text-white">
                   {" "}
                   strong neural pathways

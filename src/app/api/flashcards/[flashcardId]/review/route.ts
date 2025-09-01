@@ -9,10 +9,16 @@ interface Context {
   params: Promise<{ flashcardId: string }>;
 }
 
+interface FlashcardData {
+  easeFactor: number;
+  interval: number;
+  reviewCount: number;
+}
+
 // SM-2 Spaced Repetition Algorithm
 function calculateNextReview(
   rating: "again" | "hard" | "good" | "easy",
-  currentCard: any
+  currentCard: FlashcardData
 ) {
   let easeFactor = currentCard.easeFactor;
   let interval = currentCard.interval;
